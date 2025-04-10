@@ -1,0 +1,90 @@
+local-asn: 395909
+
+as-set:
+  member-limit: 250
+  prefix-limit: 100
+  limit-violation: accept # accept, deny
+
+blacklist:
+  asn:
+    - 21158
+    - 216056
+  as-set:
+    - AS216056:AS-VIRTUALIZE
+  prefix4:
+    - 193.109.132.0/23
+  prefix6:
+    - 2001:678:de0::/48
+
+router:
+  - name: edge.pku.395909.atlas.projectk.org
+    # policy:
+    #   as-path-list:
+    #     - name: AUTOGEN-AS-PassGFW
+    #       rule:
+    #         - action: permit
+    #           description: Edgecast
+    #           regex: "15133$"
+    #         - action: permit
+    #           description: Fastly
+    #           regex: "54113$"
+    #         - action: permit
+    #           description: Google
+    #           regex: "(15169|16550|16591|19527|36040|43515|139070|139190|396982)$"
+    #         - action: permit
+    #           description: Telegram
+    #           regex: "(62014|62041|59930)$"
+    #         - action: permit
+    #           description: Twitter
+    #           regex: "(13414|35995|63179)$"
+    #         - action: permit
+    #           description: Cloudflare
+    #           regex: "13335$"
+    #         - action: permit
+    #           description: IDC Frontier
+    #           regex: "4694$"
+    #         - action: permit
+    #           description: Amazon for docker
+    #           regex: "(14618|16509)$"
+    protocols:
+      rpki:
+        - server: rtr.rpki.cloudflare.com
+          port: 8282
+          preference: 10
+      bgp:
+        ibgp: []
+        upstream:
+          - asn: 27523
+            neighbor-address:
+              - 169.254.12.2
+              - 2602:f93b:ffff:ffff:4:1:0:1
+            update-source: wg1241
+            pre-export-accept:
+              - action: permit
+                set: "large-community add '27523:2002:6939'"
+          - asn: 27523
+            neighbor-address:
+              - 169.254.23.21
+              - 2602:f93b:ffff:ffff:2:1:0:1
+            update-source: wg1221
+        routeserver: []
+        peer: []
+        downstream: []
+
+  - name: edge.home.395909.atlas.projectk.org
+    protocols:
+      rpki:
+        - server: rtr.rpki.cloudflare.com
+          port: 8282
+          preference: 10
+      bgp:
+        ibgp: []
+        upstream:
+          - asn: 27523
+            neighbor-address:
+              - 169.254.23.51
+              - 2602:f93b:ffff:ffff:5:1:0:1
+            update-source: wg1151
+        routeserver: []
+        peer: []
+        downstream: []
