@@ -1,9 +1,11 @@
 local-asn: 395909
 
-as-set:
+as-set-limit:
   member-limit: 250
-  prefix-limit: 100
-  limit-violation: accept # accept, deny
+  prefix-limit: 50
+  large-as-list: []
+
+keepup-as-list: []
 
 blacklist:
   asn:
