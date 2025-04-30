@@ -83,8 +83,8 @@ router:
         ibgp: []
         upstream:
           - asn: 53808
-            neighbor-address:
-              - fc00:220::1
+            soft-reconfiguration-inbound: false
+            neighbor-address: fc00:220::1
             pre-import-accept:
               - action: deny
             update-source: fc00:220::5f:1
