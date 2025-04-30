@@ -73,6 +73,23 @@ router:
         peer: []
         downstream: []
 
+  - name: edge.hkg.395909.atlas.projectk.org
+    protocols:
+      rpki:
+        - server: rtr.rpki.cloudflare.com
+          port: 8282
+          preference: 10
+      bgp:
+        ibgp: []
+        upstream:
+          - asn: 53808
+            neighbor-address:
+              - fc00:220::1
+            update-source: fc00:220::5f:1
+        routeserver: []
+        peer: []
+        downstream: []
+
   - name: edge.home.395909.atlas.projectk.org
     protocols:
       rpki:
