@@ -86,10 +86,7 @@ router:
             neighbor-address:
               - fc00:220::1
             pre-import-accept:
-              - action: permit
-                set:
-                  - "community none"
-                  - "large-community none"
+              - action: deny
             update-source: fc00:220::5f:1
         routeserver: []
         peer: []
