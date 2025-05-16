@@ -75,6 +75,12 @@ router:
         downstream: []
 
   - name: edge.hkg.395909.atlas.projectk.org
+    kernel:
+      ipv6:
+        - protocol: bgp
+          src: 2602:f93B:a21::1
+        - protocol: static
+          src: 2602:f93B:a21::1
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
