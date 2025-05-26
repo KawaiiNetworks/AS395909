@@ -112,6 +112,7 @@ router:
             neighbor-address:
               - 169.254.23.51
               - 2602:f93b:ffff:ffff:5:1:0:1
+            update-source: wg1151
           - asn: 27523
             neighbor-address:
               - 169.254.23.41
