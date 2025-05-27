@@ -36,12 +36,14 @@ router:
         ibgp: []
         upstream:
           - asn: 27523
+            extended-nexthop: true
             neighbor-address: wg1241
             update-source: wg1241
             pre-export-accept:
               - action: permit
                 set: "large-community add '27523:2002:6939'"
           - asn: 27523
+            extended-nexthop: true
             neighbor-address: wg1221
             prepend: "395909 395909"
             update-source: wg1221
@@ -51,11 +53,10 @@ router:
 
   - name: edge.hkg.395909.atlas.projectk.org
     kernel:
-      ipv4:
-        - protocol: bgp
-          src: 192.168.2.1
       ipv6:
         - protocol: bgp
+          src: 2602:f93b:a21::1
+        - protocol: static
           src: 2602:f93b:a21::1
     protocols:
       rpki:
@@ -76,6 +77,13 @@ router:
         downstream: []
 
   - name: edge.home.395909.atlas.projectk.org
+    kernel:
+      ipv4:
+        - protocol: bgp
+          src: 192.168.2.1
+      ipv6:
+        - protocol: bgp
+          src: 2602:f93b:a11::1
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
@@ -85,9 +93,11 @@ router:
         ibgp: []
         upstream:
           - asn: 27523
+            extended-nexthop: true
             neighbor-address: wg1151
             update-source: wg1151
           - asn: 27523
+            extended-nexthop: true
             neighbor-address: wg1141
             update-source: wg1141
         routeserver: []
