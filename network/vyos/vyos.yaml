@@ -57,17 +57,13 @@ router:
         ibgp: []
         upstream:
           - asn: 27523
-            neighbor-address:
-              - 169.254.12.2
-              - 2602:f93b:ffff:ffff:4:1:0:1
+            neighbor-address: wg1241
             update-source: wg1241
             pre-export-accept:
               - action: permit
                 set: "large-community add '27523:2002:6939'"
           - asn: 27523
-            neighbor-address:
-              - 169.254.23.21
-              - 2602:f93b:ffff:ffff:2:1:0:1
+            neighbor-address: wg1221
             prepend: "395909 395909"
             update-source: wg1221
         routeserver: []
@@ -109,14 +105,10 @@ router:
         ibgp: []
         upstream:
           - asn: 27523
-            neighbor-address:
-              - 169.254.23.51
-              - 2602:f93b:ffff:ffff:5:1:0:1
+            neighbor-address: wg1151
             update-source: wg1151
           - asn: 27523
-            neighbor-address:
-              - 169.254.23.41
-              - 2602:f93b:ffff:ffff:4:1:0:1
+            neighbor-address: wg1141
             update-source: wg1141
         routeserver: []
         peer: []
