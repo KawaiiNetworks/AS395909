@@ -20,34 +20,13 @@ blacklist:
 
 router:
   - name: edge.pku.395909.atlas.projectk.org
-    # policy:
-    #   as-path-list:
-    #     - name: AUTOGEN-AS-PassGFW
-    #       rule:
-    #         - action: permit
-    #           description: Edgecast
-    #           regex: "15133$"
-    #         - action: permit
-    #           description: Fastly
-    #           regex: "54113$"
-    #         - action: permit
-    #           description: Google
-    #           regex: "(15169|16550|16591|19527|36040|43515|139070|139190|396982)$"
-    #         - action: permit
-    #           description: Telegram
-    #           regex: "(62014|62041|59930)$"
-    #         - action: permit
-    #           description: Twitter
-    #           regex: "(13414|35995|63179)$"
-    #         - action: permit
-    #           description: Cloudflare
-    #           regex: "13335$"
-    #         - action: permit
-    #           description: IDC Frontier
-    #           regex: "4694$"
-    #         - action: permit
-    #           description: Amazon for docker
-    #           regex: "(14618|16509)$"
+    kernel:
+      ipv4:
+        - protocol: bgp
+          src: 192.168.3.1
+      ipv6:
+        - protocol: bgp
+          src: 2602:f93b:a41::1
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
@@ -72,11 +51,12 @@ router:
 
   - name: edge.hkg.395909.atlas.projectk.org
     kernel:
+      ipv4:
+        - protocol: bgp
+          src: 192.168.2.1
       ipv6:
         - protocol: bgp
-          src: 2602:f93B:a21::1
-        - protocol: static
-          src: 2602:f93B:a21::1
+          src: 2602:f93b:a21::1
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
