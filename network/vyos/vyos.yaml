@@ -27,6 +27,19 @@ router:
       ipv6:
         - protocol: bgp
           src: 2602:f93b:a41::1
+    policy:
+      prefix-list:
+        - name: AUTOGEN-AMPR-IPv4
+          rule:
+            - action: permit
+              prefix: 44.30.63.0/24
+    redistribute:
+      pre-filter:
+        - action: permit
+          match: ip address prefix-list AUTOGEN-AMPR-IPv4
+          set:
+            - as-path prepend '203023'
+            - large-community add '395909:0:500'
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
