@@ -18,6 +18,42 @@ blacklist:
   prefix6:
     - 2001:678:de0::/48
 
+template:
+  as-path-list:
+    - &AUTOGEN-AS-PassGFW
+      name: AUTOGEN-AS-PassGFW
+      rule:
+        - action: permit
+          description: Edgecast
+          regex: "15133$"
+        - action: permit
+          description: Fastly
+          regex: "54113$"
+        - action: permit
+          description: Google
+          regex: "(15169|16550|16591|19527|36040|43515|139070|139190|396982)$"
+        - action: permit
+          description: Telegram
+          regex: "(62014|62041|59930)$"
+        - action: permit
+          description: Twitter
+          regex: "(13414|35995|63179)$"
+        - action: permit
+          description: Cloudflare
+          regex: "13335$"
+        - action: permit
+          description: IDC Frontier
+          regex: "4694$"
+        - action: permit
+          description: Amazon for docker
+          regex: "(14618|16509)$"
+        - action: permit
+          description: Wikimedia
+          regex: "14907$"
+        - action: permit
+          description: Meta
+          regex: "(32934|54115|63293)$"
+
 router:
   - name: edge.pku.395909.atlas.projectk.org
     kernel:
@@ -28,6 +64,8 @@ router:
         - protocol: bgp
           src: 2602:f93b:a41::1
     policy:
+      as-path-list:
+        - *AUTOGEN-AS-PassGFW
       prefix-list:
         - name: AUTOGEN-AMPR-IPv4
           rule:
@@ -55,11 +93,22 @@ router:
             pre-export-accept:
               - action: permit
                 set: "large-community add '27523:2002:6939'"
+          # - asn: 27523
+          #   extended-nexthop: true
+          #   neighbor-address: wg1221
+          #   out-prepend: "395909 395909"
+          #   update-source: wg1221
           - asn: 27523
             extended-nexthop: true
-            neighbor-address: wg1221
-            prepend: "395909 395909"
-            update-source: wg1221
+            neighbor-address: wg1231
+            out-prepend: "395909 395909"
+            in-prepend: "395909 395909"
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
+            update-source: wg1231
         routeserver: []
         peer: []
         downstream: []
