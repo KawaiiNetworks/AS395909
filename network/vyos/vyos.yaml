@@ -71,13 +71,13 @@ router:
           rule:
             - action: permit
               prefix: 44.30.63.0/24
-    redistribute:
-      pre-filter:
-        - action: permit
-          match: ip address prefix-list AUTOGEN-AMPR-IPv4
-          set:
-            - as-path prepend '203023'
-            - large-community add '395909:0:500'
+    # redistribute:
+    #   pre-filter:
+    #     - action: permit
+    #       match: ip address prefix-list AUTOGEN-AMPR-IPv4
+    #       set:
+    #         - as-path prepend '203023'
+    #         - large-community add '395909:0:500'
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
