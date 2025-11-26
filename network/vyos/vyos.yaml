@@ -62,15 +62,15 @@ router:
           src: 192.168.3.1
       ipv6:
         - protocol: bgp
-          src: 2602:f93b:a41::1
+          src: 2602:f93b:a41:3::1
     policy:
       as-path-list:
         - *AUTOGEN-AS-PassGFW
-      prefix-list:
-        - name: AUTOGEN-AMPR-IPv4
-          rule:
-            - action: permit
-              prefix: 44.30.63.0/24
+      # prefix-list:
+      #   - name: AUTOGEN-AMPR-IPv4
+      #     rule:
+      #       - action: permit
+      #         prefix: 44.30.63.0/24
     # redistribute:
     #   pre-filter:
     #     - action: permit
@@ -90,9 +90,6 @@ router:
             extended-nexthop: true
             neighbor-address: wg1241
             update-source: wg1241
-            pre-export-accept:
-              - action: permit
-                set: "large-community add '27523:2002:6939'"
           # - asn: 27523
           #   extended-nexthop: true
           #   neighbor-address: wg1221
@@ -109,6 +106,44 @@ router:
                 on-match-next: false
               - action: deny
             update-source: wg1231
+        routeserver: []
+        peer: []
+        downstream: []
+
+  - name: edge.pkulab.395909.atlas.projectk.org
+    kernel:
+      ipv4:
+        - protocol: bgp
+          src: 192.168.4.1
+      ipv6:
+        - protocol: bgp
+          src: 2602:f93b:a41:4::1
+    policy:
+      as-path-list:
+        - *AUTOGEN-AS-PassGFW
+    protocols:
+      rpki:
+        - server: rtr.rpki.cloudflare.com
+          port: 8282
+          preference: 10
+      bgp:
+        ibgp: []
+        upstream:
+          - asn: 27523
+            extended-nexthop: true
+            neighbor-address: wg1341
+            update-source: wg1341
+          - asn: 27523
+            extended-nexthop: true
+            neighbor-address: wg1331
+            out-prepend: "395909 395909"
+            in-prepend: "395909 395909"
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
+            update-source: wg1331
         routeserver: []
         peer: []
         downstream: []
