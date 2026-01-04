@@ -30,6 +30,12 @@ template:
           description: Fastly
           regex: "54113$"
         - action: permit
+          description: Akamai
+          regex: "20940$"
+        - action: permit
+          description: HiNet
+          regex: "3462$"
+        - action: permit
           description: Google
           regex: "(15169|16550|16591|19527|36040|43515|139070|139190|396982)$"
         - action: permit
