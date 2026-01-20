@@ -206,3 +206,65 @@ router:
         routeserver: []
         peer: []
         downstream: []
+
+  - name: edge.tpe.395909.atlas.projectk.org
+    kernel:
+      ipv4:
+        - protocol: bgp
+          src: 23.175.25.118
+        - protocol: static
+          src: 23.175.25.118
+      ipv6:
+        - protocol: bgp
+          src: 2602:f93b:142::1
+        - protocol: static
+          src: 2602:f93b:142::1
+    service:
+      sflow:
+        agent-address: 2602:f93b:142::1
+        interface: [eth0, eth1]
+        server:
+          - address: 2602:f93b:131:32::200
+            port: 6343
+          - address: 162.159.65.1
+            port: 6343
+      snmp:
+        listen-address: 2602:f93b:142::1
+        location: TPE
+        encrypted-password: 3d122fa8c4fc6e28597ecd0331dacde6d71a861b
+    policy:
+      prefix-list6: []
+        # - name: AUTOGEN-BACKBONE-TunnelEndpoint
+        #   rule:
+        #     - action: permit
+        #       prefix: 2602:f93b:f41::/48
+      as-path-list:
+        - *AUTOGEN-AS-PassGFW
+    # redistribute:
+    #   pre-accept:
+    #     - action: permit
+    #       match: ipv6 address prefix-list AUTOGEN-BACKBONE-TunnelEndpoint
+    #       set: large-community add 27523:1101:21167
+    protocols:
+      rpki:
+        - server: 172.65.0.2
+          port: 8282
+          preference: 10
+      bgp:
+        ibgp: []
+        upstream:
+          - asn: 44324
+            neighbor-address: 23.175.25.1
+            soft-reconfiguration-inbound: false
+            update-source: eth0
+            pre-import-accept:
+              - action: deny
+          - asn: 44324
+            neighbor-address: 2a13:a5c3:3130::1
+            soft-reconfiguration-inbound: false
+            update-source: eth0
+            pre-import-accept:
+              - action: deny
+        routeserver: []
+        peer: []
+        downstream: []
