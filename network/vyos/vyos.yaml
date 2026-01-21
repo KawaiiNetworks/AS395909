@@ -142,22 +142,25 @@ router:
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
               - action: deny
-        upstream:
-          - asn: 27523
-            extended-nexthop: true
-            neighbor-address: wg1341
-            update-source: wg1341
-          - asn: 27523
-            extended-nexthop: true
-            neighbor-address: wg1331
-            out-prepend: "395909 395909"
-            in-prepend: "395909 395909"
-            pre-import-accept:
+            pre-export-accept:
               - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
-            update-source: wg1331
+                set: large-community add '395909:0:500'
+        upstream:
+          # - asn: 27523
+          #   extended-nexthop: true
+          #   neighbor-address: wg1341
+          #   update-source: wg1341
+          # - asn: 27523
+          #   extended-nexthop: true
+          #   neighbor-address: wg1331
+          #   out-prepend: "395909 395909"
+          #   in-prepend: "395909 395909"
+          #   pre-import-accept:
+          #     - action: permit
+          #       match: as-path AUTOGEN-AS-PassGFW
+          #       on-match-next: false
+          #     - action: deny
+          #   update-source: wg1331
         routeserver: []
         peer: []
         downstream: []
