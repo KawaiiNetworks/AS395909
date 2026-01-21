@@ -133,7 +133,15 @@ router:
           port: 8282
           preference: 10
       bgp:
-        ibgp: []
+        ibgp:
+          - neighbor-address: wg1342
+            extended-nexthop: true
+            update-source: wg1342
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
         upstream:
           - asn: 27523
             extended-nexthop: true
@@ -251,19 +259,33 @@ router:
           port: 8282
           preference: 10
       bgp:
-        ibgp: []
+        ibgp:
+          - neighbor-address: wg1342
+            extended-nexthop: true
+            update-source: wg1342
+            pre-export-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
         upstream:
           - asn: 44324
             neighbor-address: 23.175.25.1
             soft-reconfiguration-inbound: false
             update-source: eth0
             pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
               - action: deny
           - asn: 44324
             neighbor-address: 2a13:a5c3:3130::1
             soft-reconfiguration-inbound: false
             update-source: eth0
             pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
               - action: deny
         routeserver: []
         peer: []
