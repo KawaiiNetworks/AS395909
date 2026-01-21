@@ -145,11 +145,16 @@ router:
             pre-export-accept:
               - action: permit
                 set: large-community add '395909:0:500'
-        upstream: []
-          # - asn: 27523
-          #   extended-nexthop: true
-          #   neighbor-address: wg1341
-          #   update-source: wg1341
+        upstream:
+          - asn: 27523
+            extended-nexthop: true
+            neighbor-address: wg1341
+            update-source: wg1341
+            pre-import-accept:
+              - action: permit
+                set:
+                  - "ip-next-hop 169.254.23.2"
+                  - "ipv6-next-hop fd00:23::2"
           # - asn: 27523
           #   extended-nexthop: true
           #   neighbor-address: wg1331
