@@ -91,27 +91,27 @@ router:
           preference: 10
       bgp:
         ibgp: []
-        upstream:
-          - asn: 27523
-            extended-nexthop: true
-            neighbor-address: wg1241
-            update-source: wg1241
+        upstream: []
+          # - asn: 27523
+          #   extended-nexthop: true
+          #   neighbor-address: wg1241
+          #   update-source: wg1241
           # - asn: 27523
           #   extended-nexthop: true
           #   neighbor-address: wg1221
           #   out-prepend: "395909 395909"
           #   update-source: wg1221
-          - asn: 27523
-            extended-nexthop: true
-            neighbor-address: wg1231
-            out-prepend: "395909 395909"
-            in-prepend: "395909 395909"
-            pre-import-accept:
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
-            update-source: wg1231
+          # - asn: 27523
+          #   extended-nexthop: true
+          #   neighbor-address: wg1231
+          #   out-prepend: "395909 395909"
+          #   in-prepend: "395909 395909"
+          #   pre-import-accept:
+          #     - action: permit
+          #       match: as-path AUTOGEN-AS-PassGFW
+          #       on-match-next: false
+          #     - action: deny
+          #   update-source: wg1231
         routeserver: []
         peer: []
         downstream: []
