@@ -147,7 +147,7 @@ router:
                 match: ip address prefix-list AUTOGEN-LOCAL-ASN-PREFIX4-le32
                 on-match-next: false
               - action: permit
-                match: as-path ipv6 address prefix-list AUTOGEN-LOCAL-ASN-PREFIX6-le128
+                match: ipv6 address prefix-list AUTOGEN-LOCAL-ASN-PREFIX6-le128
                 on-match-next: false
               - action: deny
         upstream:
