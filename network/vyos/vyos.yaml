@@ -144,7 +144,12 @@ router:
               - action: deny
             pre-export-accept:
               - action: permit
-                set: large-community add '395909:0:500'
+                match: ip address prefix-list AUTOGEN-LOCAL-ASN-PREFIX4-le32
+                on-match-next: false
+              - action: permit
+                match: as-path ipv6 address prefix-list AUTOGEN-LOCAL-ASN-PREFIX6-le128
+                on-match-next: false
+              - action: deny
         upstream:
           - asn: 27523
             extended-nexthop: true
@@ -154,7 +159,7 @@ router:
               - action: permit
                 set:
                   - "ip-next-hop 169.254.23.2"
-                  - "ipv6-next-hop fd00:23::2"
+                  - "ipv6-next-hop local fd00:23::2"
           # - asn: 27523
           #   extended-nexthop: true
           #   neighbor-address: wg1331
