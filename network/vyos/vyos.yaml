@@ -281,6 +281,14 @@ router:
           preference: 10
       bgp:
         ibgp:
+          - neighbor-address: wg1142
+            extended-nexthop: true
+            update-source: wg1142
+            pre-export-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
           - neighbor-address: wg1342
             extended-nexthop: true
             update-source: wg1342
