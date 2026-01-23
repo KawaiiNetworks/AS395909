@@ -166,16 +166,16 @@ router:
                 match: ipv6 address prefix-list AUTOGEN-LOCAL-ASN-PREFIX6-le128
                 on-match-next: false
               - action: deny
-        upstream:
-          - asn: 27523
-            extended-nexthop: true
-            neighbor-address: wg1341
-            update-source: wg1341
-            pre-import-accept:
-              - action: permit
-                set:
-                  - "ip-next-hop 169.254.23.2"
-                  - "ipv6-next-hop local fd00:23::2"
+        upstream: []
+          # - asn: 27523
+          #   extended-nexthop: true
+          #   neighbor-address: wg1341
+          #   update-source: wg1341
+          #   pre-import-accept:
+          #     - action: permit
+          #       set:
+          #         - "ip-next-hop 169.254.23.2"
+          #         - "ipv6-next-hop local fd00:23::2"
           # - asn: 27523
           #   extended-nexthop: true
           #   neighbor-address: wg1331
