@@ -214,16 +214,24 @@ router:
           port: 8282
           preference: 10
       bgp:
-        ibgp: []
-        upstream:
-          - asn: 27523
+        ibgp:
+          - neighbor-address: wg1142
             extended-nexthop: true
-            neighbor-address: wg1151
-            update-source: wg1151
-          - asn: 27523
-            extended-nexthop: true
-            neighbor-address: wg1141
-            update-source: wg1141
+            update-source: wg1142
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
+            pre-export-accept:
+              - action: permit
+                match: ip address prefix-list AUTOGEN-LOCAL-ASN-PREFIX4-le32
+                on-match-next: false
+              - action: permit
+                match: ipv6 address prefix-list AUTOGEN-LOCAL-ASN-PREFIX6-le128
+                on-match-next: false
+              - action: deny
+        upstream: []
         routeserver: []
         peer: []
         downstream: []
