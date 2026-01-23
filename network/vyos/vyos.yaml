@@ -208,6 +208,9 @@ router:
       ipv6:
         - protocol: bgp
           src: 2602:f93b:a11::1
+    policy:
+      as-path-list:
+        - *AUTOGEN-AS-PassGFW
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
