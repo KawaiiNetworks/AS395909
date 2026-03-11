@@ -1,0 +1,77 @@
+name: Update Cache
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 13 * * *" # CST 21:00 - full (pdb + bgpq4)
+    - cron: "0 1 * * *" # CST 9:00 - pdb only
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Cache mode"
+        required: true
+        default: "full"
+        type: choice
+        options:
+          - full
+          - pdb-only
+          - bgpq4-only
+
+permissions:
+  contents: write
+
+jobs:
+  update-cache:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout config repo
+        uses: actions/checkout@v4
+
+      - name: Checkout scripts repo
+        uses: actions/checkout@v4
+        with:
+          repository: kawaiinetworks/as27523-vyos-scripts
+          path: scripts
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bgpq4
+          pip install pyyaml requests aggregate-prefixes
+
+      - name: Determine mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "flag=${{ github.event.inputs.mode == 'pdb-only' && '--pdb-only' || github.event.inputs.mode == 'bgpq4-only' && '--bgpq4-only' || '' }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "0 4 * * *" ]; then
+            # CST 12:00 = pdb-only
+            echo "flag=--pdb-only" >> "$GITHUB_OUTPUT"
+          else
+            # CST 0:00 or push = full
+            echo "flag=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update cache
+        env:
+          ARIN_API_KEY: ${{ secrets.ARIN_API_KEY }}
+        run: python scripts/configure/save-cache.py . ${{ steps.mode.outputs.flag }}
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cache/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update cache [automated]"
+            git push
+          fi
