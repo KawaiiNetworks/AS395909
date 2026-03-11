@@ -1,0 +1,11 @@
+{
+  "type": "normal",
+  "name": "MoeDove N2",
+  "as_set": [
+    "AS-MOEDOVE-N2"
+  ],
+  "max_prefix": [
+    50,
+    500
+  ]
+}

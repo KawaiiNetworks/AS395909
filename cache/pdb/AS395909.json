@@ -1,0 +1,11 @@
+{
+  "type": "normal",
+  "name": "Kawaii Networks Education",
+  "as_set": [
+    "AS395909:AS-KAWAIINETWORKS"
+  ],
+  "max_prefix": [
+    1,
+    100
+  ]
+}
