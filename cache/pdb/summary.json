@@ -1,35 +1,35 @@
 {
   "395909": {
-    "type": "normal",
-    "name": "Kawaii Networks Education",
+    "type": "not_found",
+    "name": "Nonexistent AS395909",
     "as_set": [
-      "AS395909:AS-KAWAIINETWORKS"
+      "AS395909"
     ],
     "max_prefix": [
-      1,
+      100,
       100
     ]
   },
   "44324": {
-    "type": "normal",
-    "name": "MoeDove Global",
+    "type": "not_found",
+    "name": "Nonexistent AS44324",
     "as_set": [
-      "AS-MOEDOVE"
+      "AS44324"
     ],
     "max_prefix": [
-      1000,
-      1000
+      100,
+      100
     ]
   },
   "53808": {
-    "type": "normal",
-    "name": "MoeDove N2",
+    "type": "not_found",
+    "name": "Nonexistent AS53808",
     "as_set": [
-      "AS-MOEDOVE-N2"
+      "AS53808"
     ],
     "max_prefix": [
-      50,
-      500
+      100,
+      100
     ]
   }
 }
