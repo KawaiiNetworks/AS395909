@@ -1,11 +1,11 @@
 {
-  "type": "not_found",
-  "name": "Nonexistent AS395909",
+  "type": "normal",
+  "name": "Kawaii Networks Education",
   "as_set": [
-    "AS395909"
+    "AS395909:AS-KAWAIINETWORKS"
   ],
   "max_prefix": [
-    100,
+    1,
     100
   ]
 }
