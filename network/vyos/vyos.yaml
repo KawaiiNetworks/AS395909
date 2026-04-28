@@ -327,6 +327,7 @@ router:
         upstream:
           - asn: 17408
             local-asn: 27523
+            password: "chief=113.21.89.170"
             neighbor-address:
               - 113.21.89.169
               - 2405:7e00:1:7408:113:21:89:169
@@ -338,6 +339,7 @@ router:
                 on-match-next: false
               - action: deny
           - asn: 17408
+            password: "chief=113.21.89.174"
             neighbor-address:
               - 113.21.89.173
               - 2405:7e00:1:7408:113:21:89:171
@@ -350,6 +352,7 @@ router:
               - action: deny
           - asn: 17408
             local-asn: 203023
+            password: "chief=113.21.89.178"
             neighbor-address:
               - 113.21.89.177
               - 2405:7e00:1:7408:113:21:89:175
