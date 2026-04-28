@@ -368,6 +368,7 @@ router:
             local-asn: 27523
             vrf: TPIX27523
             password: "tpix=203.163.223.90"
+            no-in-filter: true
             neighbor-address:
               - 203.163.222.253
               - 2406:d400:1:133:203:163:222:253
@@ -381,7 +382,6 @@ router:
                 on-match-next: false
               - action: deny
           - asn: 10133
-            vrf: TPIX395909
             password: "tpix=203.163.223.91"
             neighbor-address:
               - 203.163.222.253
@@ -399,6 +399,7 @@ router:
             local-asn: 203023
             vrf: TPIX203023
             password: "tpix=203.163.223.92"
+            no-in-filter: true
             neighbor-address:
               - 203.163.222.253
               - 2406:d400:1:133:203:163:222:253
