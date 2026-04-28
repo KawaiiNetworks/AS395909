@@ -19,6 +19,12 @@ blacklist:
     - 2001:678:de0::/48
 
 template:
+  prefix6-list:
+    - &AUTOGEN-MY-RIPE-2a0b-71c0
+      name: AUTOGEN-MY-RIPE-2a0b-71c0
+      rule:
+        - action: permit
+          prefix: 2a0b:71c0::/29
   as-path-list:
     - &AUTOGEN-AS-PassGFW
       name: AUTOGEN-AS-PassGFW
@@ -95,6 +101,8 @@ router:
             extended-nexthop: true
             update-source: wg1242
             pre-import-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -154,6 +162,8 @@ router:
             extended-nexthop: true
             update-source: wg1342
             pre-import-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -238,6 +248,8 @@ router:
             extended-nexthop: true
             update-source: wg1142
             pre-import-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -281,7 +293,8 @@ router:
         location: TPE
         encrypted-password: 3d122fa8c4fc6e28597ecd0331dacde6d71a861b
     policy:
-      prefix-list6: []
+      prefix-list6:
+        - *AUTOGEN-MY-RIPE-2a0b-71c0
         # - name: AUTOGEN-BACKBONE-TunnelEndpoint
         #   rule:
         #     - action: permit
@@ -304,6 +317,8 @@ router:
             extended-nexthop: true
             update-source: wg1142
             pre-export-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -312,6 +327,8 @@ router:
             extended-nexthop: true
             update-source: wg1142
             pre-export-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -320,6 +337,8 @@ router:
             extended-nexthop: true
             update-source: wg1342
             pre-export-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -334,6 +353,8 @@ router:
             soft-reconfiguration-inbound: false
             update-source: eth2
             pre-import-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -346,6 +367,8 @@ router:
             soft-reconfiguration-inbound: false
             update-source: eth4
             pre-import-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -359,9 +382,17 @@ router:
             soft-reconfiguration-inbound: false
             update-source: eth6
             pre-import-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
+              - action: deny
+          - asn: 44324
+            neighbor-address: 23.175.25.1
+            soft-reconfiguration-inbound: false
+            update-source: eth0
+            pre-import-accept:
               - action: deny
         routeserver:
           - asn: 10133
@@ -377,6 +408,8 @@ router:
             soft-reconfiguration-inbound: false
             update-source: eth3
             pre-import-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -391,6 +424,8 @@ router:
             soft-reconfiguration-inbound: false
             update-source: eth5
             pre-import-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
@@ -408,6 +443,8 @@ router:
             soft-reconfiguration-inbound: false
             update-source: eth7
             pre-import-accept:
+              - action: deny
+                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
