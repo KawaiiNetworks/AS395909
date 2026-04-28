@@ -1,4 +1,15 @@
 {
+  "17408": {
+    "type": "normal",
+    "name": "Chief",
+    "as_set": [
+      "RADB::AS-CHIEF-TRANSIT"
+    ],
+    "max_prefix": [
+      200000,
+      5000
+    ]
+  },
   "395909": {
     "type": "normal",
     "name": "Kawaii Networks Education",
