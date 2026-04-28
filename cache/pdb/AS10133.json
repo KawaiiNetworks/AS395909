@@ -1,0 +1,11 @@
+{
+  "type": "normal",
+  "name": "TPIX(AS10133)",
+  "as_set": [
+    "RADB::AS-TPIX"
+  ],
+  "max_prefix": [
+    250000,
+    120000
+  ]
+}
