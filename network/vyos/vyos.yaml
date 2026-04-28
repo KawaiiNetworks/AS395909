@@ -325,24 +325,6 @@ router:
                 on-match-next: false
               - action: deny
         upstream:
-          - asn: 44324
-            neighbor-address: 23.175.25.1
-            soft-reconfiguration-inbound: false
-            update-source: eth0
-            pre-import-accept:
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
-          - asn: 44324
-            neighbor-address: 2a13:a5c3:3130::1
-            soft-reconfiguration-inbound: false
-            update-source: eth0
-            pre-import-accept:
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
           - asn: 17408
             local-asn: 27523
             neighbor-address:
