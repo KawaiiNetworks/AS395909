@@ -77,13 +77,13 @@ router:
       #     rule:
       #       - action: permit
       #         prefix: 44.30.63.0/24
-    # redistribute:
-    #   pre-filter:
-    #     - action: permit
-    #       match: ip address prefix-list AUTOGEN-AMPR-IPv4
-    #       set:
-    #         - as-path prepend '203023'
-    #         - large-community add '395909:0:500'
+      # redistribute:
+      #   pre-filter:
+      #     - action: permit
+      #       match: ip address prefix-list AUTOGEN-AMPR-IPv4
+      #       set:
+      #         - as-path prepend '203023'
+      #         - large-community add '395909:0:500'
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
@@ -270,7 +270,7 @@ router:
     service:
       sflow:
         agent-address: 2602:f93b:142::1
-        interface: [eth0, eth1]
+        interface: [ eth0, eth1 ]
         server:
           - address: 2602:f93b:131:32::200
             port: 6343
@@ -338,6 +338,41 @@ router:
             neighbor-address: 2a13:a5c3:3130::1
             soft-reconfiguration-inbound: false
             update-source: eth0
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
+          - asn: 17408
+            local-asn: 27523
+            neighbor-address:
+              - 113.21.89.169
+              - 2405:7e00:1:7408:113:21:89:169
+            soft-reconfiguration-inbound: false
+            update-source: eth2
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
+          - asn: 17408
+            neighbor-address:
+              - 113.21.89.173
+              - 2405:7e00:1:7408:113:21:89:171
+            soft-reconfiguration-inbound: false
+            update-source: eth4
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
+          - asn: 17408
+            local-asn: 203023
+            neighbor-address:
+              - 113.21.89.175
+              - 2405:7e00:1:7408:113:21:89:173
+            soft-reconfiguration-inbound: false
+            update-source: eth6
             pre-import-accept:
               - action: permit
                 match: as-path AUTOGEN-AS-PassGFW
