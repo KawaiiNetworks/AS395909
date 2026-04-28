@@ -363,6 +363,50 @@ router:
                 match: as-path AUTOGEN-AS-PassGFW
                 on-match-next: false
               - action: deny
-        routeserver: []
+        routeserver:
+          - asn: 10133
+            local-asn: 27523
+            password: "tpix=203.163.223.90"
+            neighbor-address:
+              - 203.163.222.253
+              - 2406:d400:1:133:203:163:222:253
+              - 203.163.222.254
+              - 2406:d400:1:133:203:163:222:254
+            soft-reconfiguration-inbound: false
+            update-source: eth3
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
+          - asn: 10133
+            password: "tpix=203.163.223.91"
+            neighbor-address:
+              - 203.163.222.253
+              - 2406:d400:1:133:203:163:222:253
+              - 203.163.222.254
+              - 2406:d400:1:133:203:163:222:254
+            soft-reconfiguration-inbound: false
+            update-source: eth5
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
+          - asn: 10133
+            local-asn: 203023
+            password: "tpix=203.163.223.92"
+            neighbor-address:
+              - 203.163.222.253
+              - 2406:d400:1:133:203:163:222:253
+              - 203.163.222.254
+              - 2406:d400:1:133:203:163:222:254
+            soft-reconfiguration-inbound: false
+            update-source: eth7
+            pre-import-accept:
+              - action: permit
+                match: as-path AUTOGEN-AS-PassGFW
+                on-match-next: false
+              - action: deny
         peer: []
         downstream: []
