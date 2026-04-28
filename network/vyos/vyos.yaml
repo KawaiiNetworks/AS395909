@@ -369,8 +369,8 @@ router:
           - asn: 17408
             local-asn: 203023
             neighbor-address:
-              - 113.21.89.175
-              - 2405:7e00:1:7408:113:21:89:173
+              - 113.21.89.177
+              - 2405:7e00:1:7408:113:21:89:175
             soft-reconfiguration-inbound: false
             update-source: eth6
             pre-import-accept:
