@@ -407,6 +407,8 @@ router:
               - 2406:d400:1:133:203:163:222:254
             soft-reconfiguration-inbound: false
             update-source: eth3
+            pre-export-accept:
+              - action: deny
             pre-import-accept:
               - action: deny
                 match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
@@ -423,6 +425,8 @@ router:
               - 2406:d400:1:133:203:163:222:254
             soft-reconfiguration-inbound: false
             update-source: eth5
+            pre-export-accept:
+              - action: deny
             pre-import-accept:
               - action: deny
                 match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
@@ -442,6 +446,8 @@ router:
               - 2406:d400:1:133:203:163:222:254
             soft-reconfiguration-inbound: false
             update-source: eth7
+            pre-export-accept:
+              - action: deny
             pre-import-accept:
               - action: deny
                 match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
