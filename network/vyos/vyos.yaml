@@ -394,6 +394,12 @@ router:
             update-source: eth0
             pre-import-accept:
               - action: deny
+          - asn: 44324
+            neighbor-address: 2a13:a5c3:3130::1
+            soft-reconfiguration-inbound: false
+            update-source: eth0
+            pre-import-accept:
+              - action: deny
         routeserver:
           - asn: 10133
             local-asn: 27523
