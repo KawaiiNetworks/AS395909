@@ -282,7 +282,7 @@ router:
     service:
       sflow:
         agent-address: 2602:f93b:142::1
-        interface: [ eth0, eth1 ]
+        interface: [eth0, eth1]
         server:
           - address: 2602:f93b:131:32::200
             port: 6343
@@ -399,6 +399,8 @@ router:
             soft-reconfiguration-inbound: false
             update-source: eth0
             pre-import-accept:
+              - action: deny
+            pre-export-accept:
               - action: deny
         routeserver:
           - asn: 10133
