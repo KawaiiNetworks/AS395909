@@ -395,6 +395,7 @@ router:
             pre-import-accept:
               - action: deny
           - asn: 44324
+            shutdown: true
             neighbor-address: 2a13:a5c3:3130::1
             soft-reconfiguration-inbound: false
             update-source: eth0
