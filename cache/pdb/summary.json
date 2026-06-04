@@ -1,57 +1,57 @@
 {
   "10133": {
-    "type": "normal",
-    "name": "TPIX(AS10133)",
+    "type": "not_found",
+    "name": "Nonexistent AS10133",
     "as_set": [
-      "RADB::AS-TPIX"
+      "AS10133"
     ],
     "max_prefix": [
-      250000,
-      120000
+      100,
+      100
     ]
   },
   "17408": {
-    "type": "normal",
-    "name": "Chief",
+    "type": "not_found",
+    "name": "Nonexistent AS17408",
     "as_set": [
-      "RADB::AS-CHIEF-TRANSIT"
+      "AS17408"
     ],
     "max_prefix": [
-      200000,
-      5000
+      100,
+      100
     ]
   },
   "395909": {
-    "type": "normal",
-    "name": "Kawaii Networks Education",
+    "type": "not_found",
+    "name": "Nonexistent AS395909",
     "as_set": [
-      "AS395909:AS-KAWAIINETWORKS"
+      "AS395909"
     ],
     "max_prefix": [
-      1,
+      100,
       100
     ]
   },
   "44324": {
-    "type": "normal",
-    "name": "MoeDove Global",
+    "type": "not_found",
+    "name": "Nonexistent AS44324",
     "as_set": [
-      "AS-MOEDOVE"
+      "AS44324"
     ],
     "max_prefix": [
-      1000,
-      1000
+      100,
+      100
     ]
   },
   "53808": {
-    "type": "normal",
-    "name": "MoeDove N2",
+    "type": "not_found",
+    "name": "Nonexistent AS53808",
     "as_set": [
-      "AS-MOEDOVE-N2"
+      "AS53808"
     ],
     "max_prefix": [
-      50,
-      500
+      100,
+      100
     ]
   }
 }

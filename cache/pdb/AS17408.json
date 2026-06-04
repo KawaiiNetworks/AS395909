@@ -1,11 +1,11 @@
 {
-  "type": "normal",
-  "name": "Chief",
+  "type": "not_found",
+  "name": "Nonexistent AS17408",
   "as_set": [
-    "RADB::AS-CHIEF-TRANSIT"
+    "AS17408"
   ],
   "max_prefix": [
-    200000,
-    5000
+    100,
+    100
   ]
 }

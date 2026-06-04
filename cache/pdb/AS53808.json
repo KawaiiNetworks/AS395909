@@ -1,11 +1,11 @@
 {
-  "type": "normal",
-  "name": "MoeDove N2",
+  "type": "not_found",
+  "name": "Nonexistent AS53808",
   "as_set": [
-    "AS-MOEDOVE-N2"
+    "AS53808"
   ],
   "max_prefix": [
-    50,
-    500
+    100,
+    100
   ]
 }

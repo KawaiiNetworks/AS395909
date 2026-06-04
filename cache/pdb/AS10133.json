@@ -1,11 +1,11 @@
 {
-  "type": "normal",
-  "name": "TPIX(AS10133)",
+  "type": "not_found",
+  "name": "Nonexistent AS10133",
   "as_set": [
-    "RADB::AS-TPIX"
+    "AS10133"
   ],
   "max_prefix": [
-    250000,
-    120000
+    100,
+    100
   ]
 }
