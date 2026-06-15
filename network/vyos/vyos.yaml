@@ -18,267 +18,178 @@ blacklist:
   prefix6:
     - 2001:678:de0::/48
 
+# Shared, repeated definitions live here and are pulled into the routers below
+# via YAML anchors (*name). The generator ignores the `template` key itself.
 template:
-  prefix6-list:
-    - &AUTOGEN-MY-RIPE-2a0b-71c0
-      name: AUTOGEN-MY-RIPE-2a0b-71c0
-      rule:
-        - action: permit
-          prefix: 2a0b:71c0::/29
-  as-path-list:
-    - &AUTOGEN-AS-PassGFW
-      name: AUTOGEN-AS-PassGFW
-      rule:
-        - action: permit
-          description: Edgecast
-          regex: "15133$"
-        - action: permit
-          description: Fastly
-          regex: "54113$"
-        - action: permit
-          description: Akamai
-          regex: "20940$"
-        - action: permit
-          description: HiNet
-          regex: "3462$"
-        - action: permit
-          description: Google
-          regex: "(15169|16550|16591|19527|36040|43515|139070|139190|396982)$"
-        - action: permit
-          description: Telegram
-          regex: "(62014|62041|59930)$"
-        - action: permit
-          description: Twitter
-          regex: "(13414|35995|63179)$"
-        - action: permit
-          description: Cloudflare
-          regex: "13335$"
-        - action: permit
-          description: IDC Frontier
-          regex: "4694$"
-        - action: permit
-          description: Amazon for docker
-          regex: "(14618|16509)$"
-        - action: permit
-          description: Wikimedia
-          regex: "14907$"
-        - action: permit
-          description: Meta
-          regex: "(32934|54115|63293)$"
+  as-sets:
+    # PassGFW: routes ORIGINATED by these ASNs bypass the GFW filter (origin
+    # match, `bgp_path.last ~ ...` — old FRR regex was all `<asn>$`).
+    passgfw: &passgfw
+      - 15133 # Edgecast
+      - 54113 # Fastly
+      - 20940 # Akamai
+      - 3462 # HiNet
+      - 15169 # Google
+      - 16550
+      - 16591
+      - 19527
+      - 36040
+      - 43515
+      - 139070
+      - 139190
+      - 396982
+      - 62014 # Telegram
+      - 62041
+      - 59930
+      - 13414 # Twitter
+      - 35995
+      - 63179
+      - 13335 # Cloudflare
+      - 4694 # IDC Frontier
+      - 14618 # Amazon
+      - 16509
+      - 14907 # Wikimedia
+      - 32934 # Meta
+      - 54115
+      - 63293
+  prefix-sets:
+    # My own RIPE allocation; dropped on import/export so it never loops back.
+    my-ripe: &my_ripe
+      - "2a0b:71c0::/29"
+  filters:
+    # Drop my own RIPE space, then accept only PassGFW-origin routes, deny rest.
+    # Used for both import (upstream/routeserver) and export (iBGP) — same code.
+    gfw-ripe: &gfw_ripe |
+      if net ~ autogen_my_ripe_2a0b_71c0 then reject;
+      if bgp_path.last ~ autogen_as_passgfw then accept;
+      reject;
+    # Export only my local-ASN prefixes (iBGP backbone announces own space only).
+    local-export: &local_export |
+      if net ~ autogen_local_asn_prefix4 then accept;
+      if net ~ autogen_local_asn_prefix6 then accept;
+      reject;
+    # Deny everything (was a lone `- action: deny`).
+    deny-all: &deny_all |
+      reject;
 
 router:
   - name: edge.pku.395909.atlas.projectk.org
-    kernel:
-      ipv4:
-        - protocol: bgp
-          src: 192.168.3.1
-      ipv6:
-        - protocol: bgp
-          src: 2602:f93b:a41:3::1
-    policy:
-      as-path-list:
-        - *AUTOGEN-AS-PassGFW
-      # prefix-list:
-      #   - name: AUTOGEN-AMPR-IPv4
-      #     rule:
-      #       - action: permit
-      #         prefix: 44.30.63.0/24
-      # redistribute:
-      #   pre-filter:
-      #     - action: permit
-      #       match: ip address prefix-list AUTOGEN-AMPR-IPv4
-      #       set:
-      #         - as-path prepend '203023'
-      #         - large-community add '395909:0:500'
+    # router-id was implicit (DNS) before; set from the old kernel ipv4 bgp src.
+    # Remove this line to fall back to DNS resolution.
+    router-id: 192.168.3.1
+    defines:
+      as-sets:
+        AUTOGEN-AS-PassGFW: *passgfw
+      prefix-sets:
+        AUTOGEN-MY-RIPE-2a0b-71c0: *my_ripe
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
           port: 8282
           preference: 10
+      kernel:
+        ipv4:
+          pre-export-accept: |
+            if source = RTS_BGP then krt_prefsrc = 192.168.3.1;
+        ipv6:
+          pre-export-accept: |
+            if source = RTS_BGP then krt_prefsrc = 2602:f93b:a41:3::1;
       bgp:
         ibgp:
-          - neighbor-address: wg1242
+          - neighbor-address: "fe80::f508:f9ff:fed9:588d%wg1242"
             extended-nexthop: true
-            update-source: wg1242
-            pre-import-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
-            pre-export-accept:
-              - action: permit
-                match: ip address prefix-list AUTOGEN-LOCAL-ASN-PREFIX4-le32
-                on-match-next: false
-              - action: permit
-                match: ipv6 address prefix-list AUTOGEN-LOCAL-ASN-PREFIX6-le128
-                on-match-next: false
-              - action: deny
+            pre-import-accept: *gfw_ripe
+            pre-export-accept: *local_export
         upstream: []
-          # - asn: 27523
-          #   extended-nexthop: true
-          #   neighbor-address: wg1241
-          #   update-source: wg1241
-          # - asn: 27523
-          #   extended-nexthop: true
-          #   neighbor-address: wg1221
-          #   out-prepend: "395909 395909"
-          #   update-source: wg1221
-          # - asn: 27523
-          #   extended-nexthop: true
-          #   neighbor-address: wg1231
-          #   out-prepend: "395909 395909"
-          #   in-prepend: "395909 395909"
-          #   pre-import-accept:
-          #     - action: permit
-          #       match: as-path AUTOGEN-AS-PassGFW
-          #       on-match-next: false
-          #     - action: deny
-          #   update-source: wg1231
         routeserver: []
         peer: []
         downstream: []
 
   - name: edge.pkulab.395909.atlas.projectk.org
-    kernel:
-      ipv4:
-        - protocol: bgp
-          src: 192.168.4.1
-      ipv6:
-        - protocol: bgp
-          src: 2602:f93b:a41:4::1
-    policy:
-      as-path-list:
-        - *AUTOGEN-AS-PassGFW
+    router-id: 192.168.4.1
+    defines:
+      as-sets:
+        AUTOGEN-AS-PassGFW: *passgfw
+      prefix-sets:
+        AUTOGEN-MY-RIPE-2a0b-71c0: *my_ripe
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
           port: 8282
           preference: 10
+      kernel:
+        ipv4:
+          pre-export-accept: |
+            if source = RTS_BGP then krt_prefsrc = 192.168.4.1;
+        ipv6:
+          pre-export-accept: |
+            if source = RTS_BGP then krt_prefsrc = 2602:f93b:a41:4::1;
       bgp:
         ibgp:
-          - neighbor-address: wg1342
+          - neighbor-address: "fe80::f44d:d3ff:fe55:72ea%wg1342"
             extended-nexthop: true
-            update-source: wg1342
-            pre-import-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
-            pre-export-accept:
-              - action: permit
-                match: ip address prefix-list AUTOGEN-LOCAL-ASN-PREFIX4-le32
-                on-match-next: false
-              - action: permit
-                match: ipv6 address prefix-list AUTOGEN-LOCAL-ASN-PREFIX6-le128
-                on-match-next: false
-              - action: deny
+            pre-import-accept: *gfw_ripe
+            pre-export-accept: *local_export
         upstream: []
-          # - asn: 27523
-          #   extended-nexthop: true
-          #   neighbor-address: wg1341
-          #   update-source: wg1341
-          #   pre-import-accept:
-          #     - action: permit
-          #       set:
-          #         - "ip-next-hop 169.254.23.2"
-          #         - "ipv6-next-hop local fd00:23::2"
-          # - asn: 27523
-          #   extended-nexthop: true
-          #   neighbor-address: wg1331
-          #   out-prepend: "395909 395909"
-          #   in-prepend: "395909 395909"
-          #   pre-import-accept:
-          #     - action: permit
-          #       match: as-path AUTOGEN-AS-PassGFW
-          #       on-match-next: false
-          #     - action: deny
-          #   update-source: wg1331
         routeserver: []
         peer: []
         downstream: []
 
   - name: edge.hkg.395909.atlas.projectk.org
-    kernel:
-      ipv6:
-        - protocol: bgp
-          src: 2602:f93b:a21::1
-        - protocol: static
-          src: 2602:f93b:a21::1
+    # No IPv4 on this router; router-id resolved via DNS.
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
           port: 8282
           preference: 10
+      kernel:
+        ipv6:
+          pre-export-accept: |
+            if source = RTS_BGP then krt_prefsrc = 2602:f93b:a21::1;
+            if source = RTS_STATIC then krt_prefsrc = 2602:f93b:a21::1;
       bgp:
         ibgp: []
         upstream:
           - asn: 53808
-            soft-reconfiguration-inbound: false
             neighbor-address: fc00:220::1
-            pre-import-accept:
-              - action: deny
-            update-source: fc00:220::5f:1
+            source-address: fc00:220::5f:1
+            pre-import-accept: *deny_all
         routeserver: []
         peer: []
         downstream: []
 
   - name: edge.home.395909.atlas.projectk.org
-    kernel:
-      ipv4:
-        - protocol: bgp
-          src: 192.168.2.1
-      ipv6:
-        - protocol: bgp
-          src: 2602:f93b:a11::1
-    policy:
-      as-path-list:
-        - *AUTOGEN-AS-PassGFW
+    router-id: 192.168.2.1
+    defines:
+      as-sets:
+        AUTOGEN-AS-PassGFW: *passgfw
+      prefix-sets:
+        AUTOGEN-MY-RIPE-2a0b-71c0: *my_ripe
     protocols:
       rpki:
         - server: rtr.rpki.cloudflare.com
           port: 8282
           preference: 10
+      kernel:
+        ipv4:
+          pre-export-accept: |
+            if source = RTS_BGP then krt_prefsrc = 192.168.2.1;
+        ipv6:
+          pre-export-accept: |
+            if source = RTS_BGP then krt_prefsrc = 2602:f93b:a11::1;
       bgp:
         ibgp:
-          - neighbor-address: wg1142
+          - neighbor-address: "fe80::f424:e5ff:fef6:8392%wg1142"
             extended-nexthop: true
-            update-source: wg1142
-            pre-import-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
-            pre-export-accept:
-              - action: permit
-                match: ip address prefix-list AUTOGEN-LOCAL-ASN-PREFIX4-le32
-                on-match-next: false
-              - action: permit
-                match: ipv6 address prefix-list AUTOGEN-LOCAL-ASN-PREFIX6-le128
-                on-match-next: false
-              - action: deny
+            pre-import-accept: *gfw_ripe
+            pre-export-accept: *local_export
         upstream: []
         routeserver: []
         peer: []
         downstream: []
 
   - name: edge.tpe.395909.atlas.projectk.org
-    kernel:
-      ipv4:
-        - protocol: bgp
-          src: 23.175.25.118
-        - protocol: static
-          src: 23.175.25.118
-      ipv6:
-        - protocol: bgp
-          src: 2602:f93b:142::1
-        - protocol: static
-          src: 2602:f93b:142::1
+    router-id: 23.175.25.118
     service:
       sflow:
         agent-address: 2602:f93b:142::1
@@ -292,57 +203,36 @@ router:
         listen-address: 2602:f93b:142::1
         location: TPE
         encrypted-password: 3d122fa8c4fc6e28597ecd0331dacde6d71a861b
-    policy:
-      prefix-list6:
-        - *AUTOGEN-MY-RIPE-2a0b-71c0
-        # - name: AUTOGEN-BACKBONE-TunnelEndpoint
-        #   rule:
-        #     - action: permit
-        #       prefix: 2602:f93b:f41::/48
-      as-path-list:
-        - *AUTOGEN-AS-PassGFW
-    # redistribute:
-    #   pre-accept:
-    #     - action: permit
-    #       match: ipv6 address prefix-list AUTOGEN-BACKBONE-TunnelEndpoint
-    #       set: large-community add 27523:1101:21167
+    defines:
+      as-sets:
+        AUTOGEN-AS-PassGFW: *passgfw
+      prefix-sets:
+        AUTOGEN-MY-RIPE-2a0b-71c0: *my_ripe
     protocols:
       rpki:
         - server: 172.65.0.2
           port: 8282
           preference: 10
+      kernel:
+        ipv4:
+          pre-export-accept: |
+            if source = RTS_BGP then krt_prefsrc = 23.175.25.118;
+            if source = RTS_STATIC then krt_prefsrc = 23.175.25.118;
+        ipv6:
+          pre-export-accept: |
+            if source = RTS_BGP then krt_prefsrc = 2602:f93b:142::1;
+            if source = RTS_STATIC then krt_prefsrc = 2602:f93b:142::1;
       bgp:
         ibgp:
-          - neighbor-address: wg1142
+          - neighbor-address: "fe80::1%wg1142" # FIXME placeholder LL (was: wg1142)
             extended-nexthop: true
-            update-source: wg1142
-            pre-export-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
-          - neighbor-address: wg1242
+            pre-export-accept: *gfw_ripe
+          - neighbor-address: "fe80::1%wg1242" # FIXME placeholder LL (was: wg1242, update-source wg1142)
             extended-nexthop: true
-            update-source: wg1142
-            pre-export-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
-          - neighbor-address: wg1342
+            pre-export-accept: *gfw_ripe
+          - neighbor-address: "fe80::1%wg1342" # FIXME placeholder LL (was: wg1342)
             extended-nexthop: true
-            update-source: wg1342
-            pre-export-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
+            pre-export-accept: *gfw_ripe
         upstream:
           - asn: 17408
             local-asn: 27523
@@ -350,81 +240,36 @@ router:
             neighbor-address:
               - 113.21.89.169
               - 2405:7e00:1:7408:113:21:89:169
-            soft-reconfiguration-inbound: false
-            update-source: eth2
-            pre-import-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
+            # was update-source: eth2
+            pre-import-accept: *gfw_ripe
           - asn: 17408
             password: "chief=113.21.89.174"
             neighbor-address:
               - 113.21.89.173
               - 2405:7e00:1:7408:113:21:89:171
-            soft-reconfiguration-inbound: false
-            update-source: eth4
-            pre-import-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
+            # was update-source: eth4
+            pre-import-accept: *gfw_ripe
           - asn: 17408
             local-asn: 203023
             password: "chief=113.21.89.178"
             neighbor-address:
               - 113.21.89.177
               - 2405:7e00:1:7408:113:21:89:175
-            soft-reconfiguration-inbound: false
-            update-source: eth6
-            pre-import-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
+            # was update-source: eth6
+            pre-import-accept: *gfw_ripe
           - asn: 44324
             neighbor-address: 23.175.25.1
-            soft-reconfiguration-inbound: false
-            update-source: eth0
-            pre-import-accept:
-              - action: deny
+            # was update-source: eth0
+            pre-import-accept: *deny_all
           - asn: 44324
             shutdown: true
             neighbor-address: 2a13:a5c3:3130::1
-            soft-reconfiguration-inbound: false
-            update-source: eth0
-            pre-import-accept:
-              - action: deny
-            pre-export-accept:
-              - action: deny
+            # was update-source: eth0
+            pre-import-accept: *deny_all
+            pre-export-accept: *deny_all
         routeserver:
-          - asn: 10133
-            local-asn: 27523
-            vrf: TPIX27523
-            password: "tpix=203.163.223.90"
-            no-in-filter: true
-            neighbor-address:
-              - 203.163.222.253
-              - 2406:d400:1:133:203:163:222:253
-              - 203.163.222.254
-              - 2406:d400:1:133:203:163:222:254
-            soft-reconfiguration-inbound: false
-            update-source: eth3
-            pre-export-accept:
-              - action: deny
-            pre-import-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
+          # The two VRF route-server sessions (TPIX27523 / TPIX203023) moved to
+          # the `vrf:` section below. This default-context one stays here.
           - asn: 10133
             password: "tpix=203.163.223.91"
             neighbor-address:
@@ -432,37 +277,46 @@ router:
               - 2406:d400:1:133:203:163:222:253
               - 203.163.222.254
               - 2406:d400:1:133:203:163:222:254
-            soft-reconfiguration-inbound: false
-            update-source: eth5
-            pre-export-accept:
-              - action: deny
-            pre-import-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
-          - asn: 10133
-            local-asn: 203023
-            vrf: TPIX203023
-            password: "tpix=203.163.223.92"
-            no-in-filter: true
-            neighbor-address:
-              - 203.163.222.253
-              - 2406:d400:1:133:203:163:222:253
-              - 203.163.222.254
-              - 2406:d400:1:133:203:163:222:254
-            soft-reconfiguration-inbound: false
-            update-source: eth7
-            pre-export-accept:
-              - action: deny
-            pre-import-accept:
-              - action: deny
-                match: ipv6 address prefix-list AUTOGEN-MY-RIPE-2a0b-71c0
-              - action: permit
-                match: as-path AUTOGEN-AS-PassGFW
-                on-match-next: false
-              - action: deny
+            # was update-source: eth5
+            pre-import-accept: *gfw_ripe
+            pre-export-accept: *deny_all
         peer: []
         downstream: []
+    # VRF route-server sessions. Each VRF mirrors `protocols`. The `table` id is
+    # the Linux VRF device's routing-table id — the old config did not record it,
+    # so these are PLACEHOLDERS; set them to the real table ids on the host.
+    vrf:
+      TPIX27523:
+        table: 1001 # FIXME real VRF table id (old: vrf TPIX27523)
+        protocols:
+          bgp:
+            routeserver:
+              - asn: 10133
+                local-asn: 27523
+                no-in-filter: true
+                password: "tpix=203.163.223.90"
+                neighbor-address:
+                  - 203.163.222.253
+                  - 2406:d400:1:133:203:163:222:253
+                  - 203.163.222.254
+                  - 2406:d400:1:133:203:163:222:254
+                # was update-source: eth3
+                pre-import-accept: *gfw_ripe
+                pre-export-accept: *deny_all
+      TPIX203023:
+        table: 1002 # FIXME real VRF table id (old: vrf TPIX203023)
+        protocols:
+          bgp:
+            routeserver:
+              - asn: 10133
+                local-asn: 203023
+                no-in-filter: true
+                password: "tpix=203.163.223.92"
+                neighbor-address:
+                  - 203.163.222.253
+                  - 2406:d400:1:133:203:163:222:253
+                  - 203.163.222.254
+                  - 2406:d400:1:133:203:163:222:254
+                # was update-source: eth7
+                pre-import-accept: *gfw_ripe
+                pre-export-accept: *deny_all

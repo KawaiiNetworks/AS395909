@@ -35,34 +35,36 @@ jobs:
           repository: kawaiinetworks/as27523-vyos-scripts
           path: scripts
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
+      # bgpq4 is a system tool (not on conda-forge); Python deps come from pixi.
+      - name: Install bgpq4
         run: |
           sudo apt-get update
           sudo apt-get install -y bgpq4
-          pip install pyyaml requests aggregate-prefixes
+
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          manifest-path: scripts/pixi.toml
+          cache: true
 
       - name: Determine mode
         id: mode
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "flag=${{ github.event.inputs.mode == 'pdb-only' && '--pdb-only' || github.event.inputs.mode == 'bgpq4-only' && '--bgpq4-only' || '' }}" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event.schedule }}" = "0 4 * * *" ]; then
-            # CST 12:00 = pdb-only
+          elif [ "${{ github.event.schedule }}" = "0 1 * * *" ]; then
+            # CST 9:00 = pdb-only
             echo "flag=--pdb-only" >> "$GITHUB_OUTPUT"
           else
-            # CST 0:00 or push = full
+            # CST 21:00 or push = full
             echo "flag=" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Update cache
+        working-directory: scripts
         env:
           ARIN_API_KEY: ${{ secrets.ARIN_API_KEY }}
-        run: python scripts/configure/save-cache.py . ${{ steps.mode.outputs.flag }}
+        run: pixi run python configure/save-cache.py "$GITHUB_WORKSPACE" ${{ steps.mode.outputs.flag }}
 
       - name: Commit and push
         run: |
