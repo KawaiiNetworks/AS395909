@@ -287,7 +287,7 @@ router:
     # so these are PLACEHOLDERS; set them to the real table ids on the host.
     vrf:
       TPIX27523:
-        table: 1001 # FIXME real VRF table id (old: vrf TPIX27523)
+        table: 30001
         protocols:
           bgp:
             routeserver:
@@ -304,7 +304,7 @@ router:
                 pre-import-accept: *gfw_ripe
                 pre-export-accept: *deny_all
       TPIX203023:
-        table: 1002 # FIXME real VRF table id (old: vrf TPIX203023)
+        table: 30003
         protocols:
           bgp:
             routeserver:
