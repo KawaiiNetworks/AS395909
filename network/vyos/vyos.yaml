@@ -96,7 +96,7 @@ router:
             if source = RTS_BGP then krt_prefsrc = 2602:f93b:a41:3::1;
       bgp:
         ibgp:
-          - neighbor-address: "fe80::f508:f9ff:fed9:588d%wg1242"
+          - neighbor-address: wg1242
             extended-nexthop: true
             pre-import-accept: *gfw_ripe
             pre-export-accept: *local_export
@@ -126,7 +126,7 @@ router:
             if source = RTS_BGP then krt_prefsrc = 2602:f93b:a41:4::1;
       bgp:
         ibgp:
-          - neighbor-address: "fe80::f44d:d3ff:fe55:72ea%wg1342"
+          - neighbor-address: wg1342
             extended-nexthop: true
             pre-import-accept: *gfw_ripe
             pre-export-accept: *local_export
@@ -179,7 +179,7 @@ router:
             if source = RTS_BGP then krt_prefsrc = 2602:f93b:a11::1;
       bgp:
         ibgp:
-          - neighbor-address: "fe80::f424:e5ff:fef6:8392%wg1142"
+          - neighbor-address: wg1142
             extended-nexthop: true
             pre-import-accept: *gfw_ripe
             pre-export-accept: *local_export
@@ -224,13 +224,13 @@ router:
             if source = RTS_STATIC then krt_prefsrc = 2602:f93b:142::1;
       bgp:
         ibgp:
-          - neighbor-address: "fe80::1%wg1142" # FIXME placeholder LL (was: wg1142)
+          - neighbor-address: wg1142
             extended-nexthop: true
             pre-export-accept: *gfw_ripe
-          - neighbor-address: "fe80::1%wg1242" # FIXME placeholder LL (was: wg1242, update-source wg1142)
+          - neighbor-address: wg1242
             extended-nexthop: true
             pre-export-accept: *gfw_ripe
-          - neighbor-address: "fe80::1%wg1342" # FIXME placeholder LL (was: wg1342)
+          - neighbor-address: wg1342
             extended-nexthop: true
             pre-export-accept: *gfw_ripe
         upstream:
