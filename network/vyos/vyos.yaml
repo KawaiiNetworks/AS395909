@@ -153,7 +153,7 @@ router:
           - asn: 53808
             neighbor-address: fc00:220::1
             source-address: fc00:220::5f:1
-            pre-import-accept: *deny_all
+            pre-import-filter: *deny_all
         routeserver: []
         peer: []
         downstream: []
@@ -261,13 +261,13 @@ router:
           - asn: 44324
             neighbor-address: 23.175.25.1
             keep-filtered: false
-            pre-import-accept: *deny_all
+            pre-import-filter: *deny_all
           - asn: 44324
             shutdown: true
             neighbor-address: 2a13:a5c3:3130::1
             keep-filtered: false
-            pre-import-accept: *deny_all
-            pre-export-accept: *deny_all
+            pre-import-filter: *deny_all
+            pre-export-filter: *deny_all
         routeserver:
           # The two VRF route-server sessions (TPIX27523 / TPIX203023) moved to
           # the `vrf:` section below. This default-context one stays here.
@@ -280,7 +280,7 @@ router:
               - 2406:d400:1:133:203:163:222:254
             keep-filtered: false
             pre-import-accept: *gfw_ripe
-            pre-export-accept: *deny_all
+            pre-export-filter: *deny_all
         peer: []
         downstream: []
     # VRF route-server sessions. Each VRF mirrors `protocols`. The `table` id is
@@ -303,7 +303,7 @@ router:
                   - 2406:d400:1:133:203:163:222:254
                 keep-filtered: false
                 pre-import-accept: *gfw_ripe
-                pre-export-accept: *deny_all
+                pre-export-filter: *deny_all
       TPIX203023:
         table: 30003
         protocols:
@@ -320,4 +320,4 @@ router:
                   - 2406:d400:1:133:203:163:222:254
                 keep-filtered: false
                 pre-import-accept: *gfw_ripe
-                pre-export-accept: *deny_all
+                pre-export-filter: *deny_all
