@@ -240,14 +240,14 @@ router:
             neighbor-address:
               - 113.21.89.169
               - 2405:7e00:1:7408:113:21:89:169
-            # was update-source: eth2
+            keep-filtered: false
             pre-import-accept: *gfw_ripe
           - asn: 17408
             password: "chief=113.21.89.174"
             neighbor-address:
               - 113.21.89.173
               - 2405:7e00:1:7408:113:21:89:171
-            # was update-source: eth4
+            keep-filtered: false
             pre-import-accept: *gfw_ripe
           - asn: 17408
             local-asn: 203023
@@ -255,16 +255,16 @@ router:
             neighbor-address:
               - 113.21.89.177
               - 2405:7e00:1:7408:113:21:89:175
-            # was update-source: eth6
+            keep-filtered: false
             pre-import-accept: *gfw_ripe
           - asn: 44324
             neighbor-address: 23.175.25.1
-            # was update-source: eth0
+            keep-filtered: false
             pre-import-accept: *deny_all
           - asn: 44324
             shutdown: true
             neighbor-address: 2a13:a5c3:3130::1
-            # was update-source: eth0
+            keep-filtered: false
             pre-import-accept: *deny_all
             pre-export-accept: *deny_all
         routeserver:
@@ -277,7 +277,7 @@ router:
               - 2406:d400:1:133:203:163:222:253
               - 203.163.222.254
               - 2406:d400:1:133:203:163:222:254
-            # was update-source: eth5
+            keep-filtered: false
             pre-import-accept: *gfw_ripe
             pre-export-accept: *deny_all
         peer: []
@@ -300,7 +300,7 @@ router:
                   - 2406:d400:1:133:203:163:222:253
                   - 203.163.222.254
                   - 2406:d400:1:133:203:163:222:254
-                # was update-source: eth3
+                keep-filtered: false
                 pre-import-accept: *gfw_ripe
                 pre-export-accept: *deny_all
       TPIX203023:
@@ -317,6 +317,6 @@ router:
                   - 2406:d400:1:133:203:163:222:253
                   - 203.163.222.254
                   - 2406:d400:1:133:203:163:222:254
-                # was update-source: eth7
+                keep-filtered: false
                 pre-import-accept: *gfw_ripe
                 pre-export-accept: *deny_all
