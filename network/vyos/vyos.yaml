@@ -190,7 +190,6 @@ router:
 
   - name: edge.tpe.395909.atlas.projectk.org
     router-id: 23.175.25.118
-    bird: 3
     service:
       sflow:
         agent-address: 2602:f93b:142::1
