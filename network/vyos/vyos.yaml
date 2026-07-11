@@ -176,7 +176,7 @@ router:
             if source = RTS_BGP then krt_prefsrc = 192.168.2.1;
         ipv6:
           pre-export-accept: |
-            if source = RTS_BGP then krt_prefsrc = 2602:f93b:a11::1;
+            if source = RTS_BGP then krt_prefsrc = 2602:f93b:a41:2::1;
       bgp:
         ibgp:
           - neighbor-address: wg1142
