@@ -61,6 +61,7 @@ template:
     # Used for both import (upstream/routeserver) and export (iBGP) — same code.
     gfw-ripe: &gfw_ripe |
       if net ~ autogen_my_ripe_2a0b_71c0 then reject;
+      if bgp_path.last = 13335 then reject;
       if bgp_path.last ~ autogen_as_passgfw then accept;
       reject;
     # Export only my local-ASN prefixes (iBGP backbone announces own space only).
